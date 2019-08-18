@@ -1,0 +1,21 @@
+library ieee;
+use ieee.std_logic_1164.all;
+entity controlador_mss is
+	port(clock,reset,start,termostato,anemometro,sensor_lluvia,sensor_ventana,ok_delay_15m,ok_delay_3s: in std_logic;
+			replegar_toldo,desplegar_toldo,toldo_desplegado,toldo_replegado,apagar_ventilador,encender_ventilador,en_delay_3s,en_delay_15m,reset_delay_3s,reset_delay_15m: out std_logic;
+			estado: out std_logic_vector(3 downto 0);
+end controlador_mss;
+
+architecture solucion of controlador_mss is
+type estado is (Ta,Tb,Tc,Td,Te,Tf,Tg,Th,Ti,Tj)
+signal y; estado;
+process(clock,reset)
+	begin
+	if reset <= '1' then y <= Ta;
+	elsif clock'event and clock = '1' then
+	case y is
+		when Ta => if start = '1' then y <= Tb; else y <= Ta; end if;
+		when Tb => if start = '0' then y <= Tc; else y <= Tb; end if;
+		when Tc => if sensor_lluvia = '1' & sensor_ventana '0' then y <= Td; else y <= Te; end if;
+		
+		
